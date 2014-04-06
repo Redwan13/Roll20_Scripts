@@ -533,11 +533,17 @@ function processEdgeEmpireDiceScript(diceToRoll, who, whisper){
     var diceExpr = /^(\d+)([a-z]+)$/i;
 
     var error = false;
-    var errorDice = "";
+    var errorMessage = "";
     for (i=0, j;i<j;i++){
         var match = diceExpr.exec (diceToRoll[i]);
+        if (match === null) 
+        {
+            error = true;
+            errorMessage = "Couldn't parse '" + diceToRoll[i]+"'";
+            break;
+        }
         diceQty = match[1];
-        diceColor=match[2];
+        diceColor = match[2];
         
         switch(diceColor) {
         //Blue "Boost" die (d6)
@@ -577,7 +583,7 @@ function processEdgeEmpireDiceScript(diceToRoll, who, whisper){
                 break;
             default: 
                 error = true;
-                errorDice = diceColor;
+                errorMessage = "Invalid dice '" + diceColor+"'";
                 break;
         }
         if (error === true)
@@ -585,7 +591,6 @@ function processEdgeEmpireDiceScript(diceToRoll, who, whisper){
     }
     
     if (error === true) {
-        var errorMessage = "Invalid dice '" + errorDice+"'";
         if (whisper === true){
             sendChat("Error:", "/w gm " + errorMessage);
             sendChat("Error:", "/w " + who + " " + errorMessage);  
